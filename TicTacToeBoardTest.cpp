@@ -18,3 +18,22 @@ TEST(TicTacToeBoardTest, sanityCheck)
 {
 	ASSERT_TRUE(true);
 }
+TEST(TicTacToeBoardTest, checkFreshBoardIsClear)
+{
+	TicTacToeBoard game;
+	game.clearBoard();
+	Piece test;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			test = game.getPiece(i, j);
+			ASSERT_EQ(test, Blank);
+		}
+	}
+}
+
+TEST(TicTacToeBoardTest, checkFreshBoardTurn)
+{
+	TicTacToeBoard game;
+//	ASSERT_EQ(game.getTurn(), X);
+	ASSERT_TRUE(false);
+}
