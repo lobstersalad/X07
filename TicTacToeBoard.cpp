@@ -9,7 +9,7 @@ void TicTacToeBoard::toggleTurn()
 {
 	if (turn == X) {
 		turn = O;
-	} else {
+	} else if (turn == O) {
 		turn = X;
 	}
 }
@@ -17,20 +17,15 @@ void TicTacToeBoard::toggleTurn()
 //Constructor sets an empty board and specifies it is X's turn first
 TicTacToeBoard::TicTacToeBoard()
 {
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			board[i][j] = Blank;
-		}
-	}
-	
+	clearBoard();
 	turn = X;
 }
 
 //Resets each board location to the Blank Piece value
 void TicTacToeBoard::clearBoard()
 {
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
 			board[i][j] = Blank;
 		}
 	}
@@ -45,7 +40,23 @@ void TicTacToeBoard::clearBoard()
 **/ 
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  return Invalid;
+	if (board[row][column] == Blank) {
+	  	if (turn == X) {
+			board[row][column] = X;
+			toggleTurn();
+			return X;
+		} else {
+			board[row][column] = O;
+			toggleTurn();
+			return O;
+		}
+	} else if ((row > 2 || column > 2) || (row < 0 || column < 0)) {
+		toggleTurn();
+		return Invalid;
+	} else {
+		toggleTurn();
+		return board[row][column];
+	}
 }
 
 /**
@@ -54,7 +65,7 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-	if (row > 2 || column > 2) {
+	if ((row > 2 || column > 2) || (row < 0 || column < 0)) {
 		return Invalid;
 	} else if (board[row][column] == Blank) {
 		return Blank;
@@ -69,5 +80,48 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
-  return Invalid;
+	Piece winner = Invalid;
+	bool full = true;
+	// Check rows
+	for (int i = 0; i < 3; i++) {
+		if ((board[i][0] == board[i][1]) && (board[i][1] == board[i][2]) && (board[i][0] != 		    Invalid) && (board[i][0] != Blank)) {
+			winner = board[i][0];
+		}
+	}
+	// Check columns
+	for (int i = 0; i < 3; i++) {
+		if ((board[0][i] == board[1][i]) && (board[1][i] == board[2][i]) && (board[0][i] != 		    Invalid) && (board[0][i] != Blank)) {
+			winner = board[0][i];
+		}
+	}
+	// Check low-high diagonal
+	if ((board[0][0] == board[1][1]) && (board[1][1] == board[2][2]) && (board[1][1] != Invalid) 	    && (board[1][1] != Blank)) {
+		winner = board[1][1];
+	}
+	// Check high-low diagonal
+	if ((board[2][0] == board[1][1]) && (board[1][1] == board[0][2]) && (board[1][1] != Invalid)	    && (board[1][1] != Blank)) {
+		winner = board[1][1];	
+	}
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (board[i][j] == Blank) {
+				full = false;
+			}
+		}
+	}
+	if ((full == true) && (winner == Invalid)) {
+		return Blank;
+	} else if ((full == false) && (winner == Invalid)) {
+		return Invalid;
+	} else {
+		return winner;
+	}
+}
+
+/**
+ * Returns current turn, X or O.
+**/
+Piece getTurn(TicTacToeBoard game)
+{
+	return game.turn;
 }
